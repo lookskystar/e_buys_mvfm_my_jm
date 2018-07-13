@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--配置信息 -->
+<configuration>
+	<!-- 引入dto.properties资源文件 -->
+	<properties resource="dto.properties"></properties>
+	
+	<typeAliases>
+		<typeAlias type="com.yayadou.ebuy.dto.User" alias="user"/>
+		<typeAlias type="com.yayadou.ebuy.dto.GoodsType" alias="goodsType"/>
+		<typeAlias type="com.yayadou.ebuy.dto.Goods" alias="goods"/>
+	</typeAliases>
+	
+	<!-- 配置MyBatis3的环境 -->
+	<environments default="env">
+		<!-- 配置一个环境 -->
+		<environment id="env">
+			<!-- 配置事务管理器 JDBC(有事务)、MANAGED(托管)-->
+			<transactionManager type="JDBC"/>
+			<!-- 配置数据源
+			JNDI(web服务器方式定义数据源)、POOLED(自带连接池)、UNPOOLED(不带连接池) -->
+			<dataSource type="POOLED">
+				<!-- 连接数据库驱动 -->
+				<property name="driver" value="${dto.driverClass}"/>
+				<!-- 连接数据库URL -->
+				<property name="url" value="${dto.jdbcUrl}"/>
+				<!-- 连接数据库用户名 -->
+				<property name="username" value="${dto.user}"/>
+				<!-- 连接数据库密码 -->
+				<property name="password" value="${dto.password}"/>
+			</dataSource>
+		</environment>
+	</environments>
+	<!-- 配置XxxMapper.xml访问数据库SQL文件 -->
+	<mappers>
+		<mapper resource="com/yayadou/ebuy/mapper/UserMapper.xml"/>
+		<mapper resource="com/yayadou/ebuy/mapper/GoodsTypeMapper.xml"/>
+		<mapper resource="com/yayadou/ebuy/mapper/GoodsMapper.xml"/>
+	</mappers>
+</configuration>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yayadou.ebuy.mapper.GoodsMapper">
+
+    <!-- 定义ResultMap -->
+	<resultMap id="goodsResultMap" type="goods">
+		<!-- 定义列和java对象属性的对应关系 -->
+		<result column="ID" property="id"/>
+		<result column="TITLE" property="title"/>
+		<result column="BRAND_NAME" property="brandName"/>
+		<result column="PRICE" property="price"/>
+		<result column="FAVORABLE_PRICE" property="favorablePrice"/>
+		<result column="STORAGE" property="storage"/>
+		<result column="IMAGE" property="image"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="TYPE_CODE" property="goodsType.code"/>
+		<result column="CREATE_DATE" property="createDate"/>
+	</resultMap>
+	
+	<!-- 获取商品类型 -->
+	<select id="addGoods" resultType="int">
+		insert into
+			e_goods
+			(TITLE,BRAND_NAME,PRICE,
+			FAVORABLE_PRICE,STORAGE,IMAGE,
+			DESCRIPTION,TYPE_CODE,CREATE_DATE)
+		values
+			(#{title},#{brandName},#{price},
+			#{favorablePrice},#{storage},#{image},
+			#{description},#{goodsType.code},#{createDate})
+	</select>
+
+</mapper>

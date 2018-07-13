@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yayadou.ebuy.mapper.GoodsTypeMapper">
+
+    <!-- 定义ResultMap -->
+	<resultMap id="goodsTypeResultMap" type="goodsType">
+		<!-- 定义列和java对象属性的对应关系 -->
+		<result column="code" property="code"/>
+		<result column="name" property="name"/>
+		<result column="remark" property="remark"/>
+	</resultMap>
+	
+	<!-- 获取商品类型 -->
+	<select id="getGoodsTypeList" resultType="goodsType">
+		select * from e_goods_type order by code asc
+	</select>
+
+</mapper>

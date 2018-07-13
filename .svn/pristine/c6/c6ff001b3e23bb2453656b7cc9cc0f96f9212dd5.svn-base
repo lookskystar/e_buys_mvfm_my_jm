@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd     
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+        
+        <!-- 开启注解功能 -->
+		<mvc:annotation-driven></mvc:annotation-driven>
+        <!-- 扫描指定包中的业务逻辑控制器类 -->
+        <context:component-scan base-package="com.yayadou.ebuy">
+        </context:component-scan>
+    
+       
+       <!-- 配置jsp视图解析器 -->
+        <bean id="viewResolverJsp" 
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        	<property name="viewClass" 
+        	value="org.springframework.web.servlet.view.InternalResourceView"/>
+        	<!-- 响应资源的前缀，如果是webroot根路径可以不要配置前缀 -->
+        	<property name="prefix" value="/"/>
+        	<!-- 响应资源后缀 -->
+        	<property name="suffix" value=""></property>
+        	<!-- 优先级别 -->
+        	<property name="order" value="1"/>
+        </bean>
+        
+        <!-- spring拦截器 -拦截后台登入-->
+        <mvc:interceptors>
+        	<mvc:interceptor>
+        		<!-- 配置需要拦截请求 -->
+        		<mvc:mapping path="/admin/**"/>
+        		<!-- 配置不需要拦截请求 -->
+        		<mvc:exclude-mapping path="/loginAdmin/"/>
+        		<!-- 使用拦截-->
+        		<bean class="com.yayadou.ebuy.interceptor.LoginInterceptor"></bean>
+        	</mvc:interceptor>
+        </mvc:interceptors>
+        
+        <!-- 配置freeMarker视图解析器 -->
+       <bean id="viewResolverFtl" 
+       class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+          <property name="viewClass" 
+          value="org.springframework.web.servlet.view.freemarker.FreeMarkerView"/>
+          <property name="contentType" value="text/html; charset=UTF-8"/>
+          <property name="exposeRequestAttributes" value="true" />
+          <property name="exposeSessionAttributes" value="true" />
+          <property name="exposeSpringMacroHelpers" value="true" />
+          <property name="cache" value="true" />
+          <!-- 请求模板文件的后缀 -->
+          <property name="suffix" value=".ftl" />
+          <property name="order" value="0"/>
+       </bean>
+       <!-- 配置freeMarker的模板路径 -->
+	    <bean id="freemarkerConfig" 
+	    class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+	        <!-- 配置模板文件夹目录的路径 -->
+	        <property name="templateLoaderPath" value="ftlFile"/>
+	        <property name="freemarkerVariables">
+	            <map>
+	                <entry key="xml_escape" value-ref="fmXmlEscape" />
+	            </map>
+	        </property>
+	        <property name="defaultEncoding" value="UTF-8"/>
+	        <property name="freemarkerSettings">
+	            <props>
+	                <prop key="template_update_delay">3600</prop>
+	                <prop key="locale">zh_CN</prop>
+	                <prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+	                <prop key="date_format">yyyy-MM-dd</prop>
+	                <prop key="number_format">#.##</prop>
+	            </props>
+	        </property>
+	    </bean>
+	    
+	     <bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape"/>
+	     
+	  
+        <!-- 定义校验器 -->
+        <bean id="validator" 
+        	class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        	<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+        </bean>
+        <!-- 注册校验器 -->
+        <bean id="webBindingInitializer" 
+        	class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+        	<property name="validator" ref="validator"></property>
+        </bean>
+        
+       
+</beans>

@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>E购通电子商务平台-购物车</title>
+	<link rel="stylesheet" href="css/base.css"/>
+
+	<link rel="stylesheet" href="css/home.css"/>
+	<link rel="stylesheet" href="css/style1.css"/>
+	<!-- 引入jQuery框架 -->
+	<script type="text/javascript" src="js/jquery-1.11.0.js"></script>
+	<script type="text/javascript" src="js/jquery-migrate-1.2.1.js"></script>
+	<script type="text/javascript">
+		
+		/** 文档加载完 */
+		$(function(){
+
+			/** 获取所有的主菜单, 为所有的主菜单绑定onmouseover与onmouseout事件 */
+			$(".nav-menu > li").hover(
+				function(){ // onmouseover
+					/** 为主菜单li添加样式 */
+					$(this).addClass("active");
+					/** 通过主菜单找对应的子菜单用300毫秒滑下显示出来 */
+					$(this).find(".sub-Menu").slideDown(300);
+				},
+				function(){ // onmouseout
+					/** 首页主菜单li的样式不删除 */
+					if (this.id != "home"){
+						/** 删除主菜单li样式 */
+						$(this).removeClass("active");
+					}
+					/** 通过主菜单找对应的子菜单用10毫秒滑上隐藏出来 */
+					$(this).find(".sub-Menu").slideUp(10);
+				}
+			);
+
+			
+
+			/** 获取全选复选框为它绑定点击事件 */
+			$("#checkAll").click(function(){
+				/** 获取下面所有的checkbox,当全选选中时下面的全部选中,
+					当全选没有选中时,下面不需要选中 */
+				/** 查询所有的input元素它的类型为checkbox并且id属性值以box_开头 */
+				$("input[type='checkbox'][id^='box_']").attr("checked", this.checked);
+				/** 计算商品的总金额 */
+				calcPrice();
+			});
+
+			/** 如果全选复选框没有选中的话，让它选中 */
+			if (!$("#checkAll").attr("checked")){
+				$("#checkAll").trigger("click");
+			}else{
+				/** 计算商品的总金额 */
+				calcPrice();
+			}
+
+			/** 获取下面的checkbox为它们绑定点击事件 */
+			var boxs = $("input[type='checkbox'][id^='box_']");
+			boxs.click(function(){
+				/** 计算商品的总金额 */
+				calcPrice();
+				/** 让全选选中 */
+				$("#checkAll").attr("checked", boxs.length == boxs.filter(":checked").length);
+			});
+
+			/** 获取所有的购买数据文本框,为它们绑定onchange事件 */
+			$("input[id^='num_']").change(function(){
+				/** 获取购买数量 */
+				var num = this.value;
+				/** 对购买数量做判断 */
+				if (!/^\d+$/.test(num) || num < 1){
+					this.value = 1;
+					num = 1;
+				}
+				/** 获取单价 */
+				var price = parseFloat($(this.id.replace("num", "#price")).html());
+				/** 设置小计 */
+				$(this.id.replace("num", "#total")).html(num * price);
+				/** 计算商品的总金额 */
+				calcPrice();
+			});
+
+
+			/** 获取反选复选框为它绑定点击事件 */
+			$("#uncheck").click(function(){
+				/** 迭代下面所有的checkbox */
+				boxs.each(function(){
+					/** 让自己取选自己的checked属性值 */
+					$(this).attr("checked", !this.checked);
+				});
+				/** 计算商品的总金额 */
+				calcPrice();
+				/** 让全选选中 */
+				$("#checkAll").attr("checked", boxs.length == boxs.filter(":checked").length);
+			});
+
+		});
+
+		/** 定义计算商品总金额的函数 */
+		var calcPrice = function(){
+			/** 获取下面所有选中的checkbox */
+			var boxs = $("input[type='checkbox'][id^='box_']:checked");
+			/** 定义总金额 */
+			var total_price = 0;
+			/** 如果有选中的，就计算 */
+			if (boxs.length > 0){
+				/** 迭代所有选中的checkbox */
+				boxs.each(function(){
+					/** 获取价格 */
+					var price = parseFloat($(this.id.replace("box", "#price")).html());
+					/** 获取数量 */
+					var num = parseInt($(this.id.replace("box", "#num")).val());
+					/* 设置小计金额 **/
+					total_price += price * num;
+				});
+				/** 设置显示总金额 */
+				$("#total_price").html("¥ "+ total_price +" 元");
+			}else{
+				/** 设置显示总金额 */
+				$("#total_price").html("¥ 0.00 元");
+			}
+		};
+	</script>
+</head>
+<body>
+	<!-- header -->
+	<div class="header">
+		<!-- header-top -->
+		<div class="header-top clear">
+			<div class="container">
+
+				<div class="left">
+					<span class="home"><em>E购通首页</em></span>
+					<span>亲，欢迎来到E购通</span>
+					<span>请<a href="login.html">登录</a></span>
+					<a href="register.html">免费注册</a>
+				</div>
+				<ul class="right clear">
+					<li><a href="index.html">我的E购通</a></li>
+					<li><a href="#">我的订单</a></li>
+					<li><a href="#">服务中心</a><i></i>
+						<ul>
+							<li><a href="#">子导航一</a></li>
+							<li><a href="#">子导航二</a></li>
+							<li><a href="#">子导航三</a></li>
+							<li><a href="#">子导航四</a></li>
+						</ul>
+					</li>
+					<li><a href="#">网站导航</a><i></i>
+						<ul>
+							<li><a href="#">子导航一</a></li>
+							<li><a href="#">子导航二</a></li>
+							<li><a href="#">子导航三</a></li>
+							<li><a href="#">子导航四</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- header-top  end-->
+		<!-- search-logo -->
+		<div class="search-logo">	
+			<div  class="clear container">
+				<a href="#" class="left lo1"><img src="images/logo.png" alt=""></a>
+				<form class="left fr1" action="" mothed="">
+					<p>
+						<input placeholder="手机搜索  OPPO N3（N5209）白色" class="f14 c-999999" type="text"><input type="submit" class="f14 white" value="搜索">
+					</p>
+					<p class="text-2em">
+						<a href="#">618狂欢</a>
+						<a href="#">西门子</a>
+						<a href="#">199减100</a>
+						<a href="#">6.18元</a>
+						<a href="#">魅蓝note</a>
+						<a href="#">图书</a>
+						<a href="#">61812期免息</a>
+						<a href="#">领500元</a>
+					</p>
+				</form>
+			</div>
+			<!-- search-logo end-->
+		</div>
+	</div>
+	<!-- header end-->
+	<!-- nav -->
+	<div class="nav">
+		<div class="container">
+			<ul class="nav-menu">
+				<li id="home" class="active">
+					<a href="index.html">首  页</a>
+				</li>
+				<li>
+					<a href="index.html">手  机</a>
+					<ul class="sub-Menu">
+						<li><a href="#">三星</a></li>
+						<li><a href="#">华为</a></li>
+						<li><a href="#">OPPO</a></li>
+						<li><a href="#">vivo</a></li>
+						<li><a href="#">苹果</a></li>
+						<li><a href="#">TCL</a></li>
+						<li><a href="#">酷派</a></li>
+						<li><a href="#">大神</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="index.html">数码相机</a>
+					<ul class="sub-Menu">
+						<li><a href="#">佳能</a></li>
+						<li><a href="#">尼康</a></li>
+						<li><a href="#">索尼</a></li>
+						<li><a href="#">富士徕卡</a></li>
+						<li><a href="#">卡西欧</a></li>
+						<li><a href="#">奥林巴斯</a></li>
+						<li><a href="#">酷派</a></li>
+						<li><a href="#">松下</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="index.html">电  视</a>
+					<ul class="sub-Menu">
+						<li><a href="#">三星</a></li>
+						<li><a href="#">华为</a></li>
+						<li><a href="#">OPPO</a></li>
+						<li><a href="#">vivo</a></li>
+						<li><a href="#">苹果</a></li>
+						<li><a href="#">TCL</a></li>
+						<li><a href="#">酷派</a></li>
+						<li><a href="#">大神</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="index.html">空  调</a>
+					<ul class="sub-Menu">
+						<li><a href="#">三星</a></li>
+						<li><a href="#">华为</a></li>
+						<li><a href="#">OPPO</a></li>
+						<li><a href="#">vivo</a></li>
+						<li><a href="#">苹果</a></li>
+						<li><a href="#">TCL</a></li>
+						<li><a href="#">酷派</a></li>
+						<li><a href="#">大神</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="index.html">冰  箱</a>
+					<ul class="sub-Menu">
+						<li><a href="#">三星</a></li>
+						<li><a href="#">华为</a></li>
+						<li><a href="#">OPPO</a></li>
+						<li><a href="#">vivo</a></li>
+						<li><a href="#">苹果</a></li>
+						<li><a href="#">TCL</a></li>
+						<li><a href="#">酷派</a></li>
+						<li><a href="#">大神</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="index.html">洗衣机</a>
+					<ul class="sub-Menu">
+						<li><a href="#">三星</a></li>
+						<li><a href="#">华为</a></li>
+						<li><a href="#">OPPO</a></li>
+						<li><a href="#">vivo</a></li>
+						<li><a href="#">苹果</a></li>
+						<li><a href="#">TCL</a></li>
+						<li><a href="#">酷派</a></li>
+						<li><a href="#">大神</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="index.html">平板电脑</a>
+					<ul class="sub-Menu">
+						<li><a href="#">三星</a></li>
+						<li><a href="#">华为</a></li>
+						<li><a href="#">OPPO</a></li>
+						<li><a href="#">vivo</a></li>
+						<li><a href="#">苹果</a></li>
+						<li><a href="#">TCL</a></li>
+						<li><a href="#">酷派</a></li>
+						<li><a href="#">大神</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="index.html">关于我们</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- nav end-->
+
+	
+	<!-- content -->
+	<div class="content">
+		<div class="container">
+			<div class="wplb">
+				<div class="wph_">
+					<span>手机 > 华为</span>
+				</div>
+				<div class="sx_">
+					<p><span><font color="red">手机</font> 商品筛选</span> 共计3481个商品</p>
+				</div>
+				<div class="pp_ clear">
+					<div class="ppb"><span>品牌:</span></div>
+					<div class="pz">
+						<table>
+							<tr>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/1.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/2.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/3.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/4.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/5.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/6.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/7.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/8.jpg"></a></td>
+							</tr>
+							<tr>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/9.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/10.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/11.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/12.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/13.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/14.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/15.jpg"></a></td>
+								<td><a href="javascript:void(0)"><img src="images/pinpai/16.jpg"></a></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="jg clear" >
+					<div class="_bts"><span style="line-height:22px;">价格:</span></div>
+					<div class="_nr">
+					<a href="javascript:void(0)">0-299</a>
+					<a href="javascript:void(0)">300-699</a>
+					<a href="javascript:void(0)">700-1099</a>
+					<a href="javascript:void(0)">1100-2099</a>
+					<a href="javascript:void(0)">2100-3799</a>
+					<a href="javascript:void(0)">3800-5099</a>
+					<a href="javascript:void(0)">5100以上</a>
+					<input type="text">-<input type="text"><button>确定</button>
+					</div>
+					
+				</div>
+				<div class="jg clear" style="border-bottom:1px solid #dcdcdc;">
+					<div class="_bts"><span>网络:</span></div>
+					<div class="_nr">
+					<a href="javascript:void(0)">移动4G</a>
+					<a href="javascript:void(0)">联通4G</a>
+					<a href="javascript:void(0)">电信4G</a>
+					<a href="javascript:void(0)">移动3G</a>
+					<a href="javascript:void(0)">联通3G</a>
+					<a href="javascript:void(0)">电信3G</a>
+					<a href="javascript:void(0)">移动2G/联通2G</a>
+					<a href="javascript:void(0)">电信2G</a>
+					<a href="javascript:void(0)">双卡</a>
+					<a href="javascript:void(0)">其他</a>
+					
+					</div>
+					
+				</div>
+				<div class="clear">
+				<div class="sp_">
+					<div class="dgsp">
+						<a href=""><img src="images/sp.jpg"></a>
+						<img src="images/sp.jpg" class="sl">
+						<p class="red"><span>￥</span>4888.00 <img src="images/5.jpg"></p>
+						<a href="">Apple iPhone 6(A1586)16GB金色移动</a></br>
+						<font color="#afafaf" size="2">已有<strong>64125</strong>人评价</font>
+					</div>
+				</div>
+				<div class="sp_">
+					<div class="dgsp">
+						<a href=""><img src="images/sp.jpg"></a>
+						<img src="images/sp.jpg" class="sl">
+						<p class="red"><span>￥</span>4888.00 <img src="images/5.jpg"></p>
+						<a href="">Apple iPhone 6(A1586)16GB金色移动</a></br>
+						<font color="#afafaf" size="2">已有<strong>64125</strong>人评价</font>
+					</div>
+				</div>
+				<div class="sp_">
+					<div class="dgsp">
+						<a href=""><img src="images/sp.jpg"></a>
+						<img src="images/sp.jpg" class="sl">
+						<p class="red"><span>￥</span>4888.00 <img src="images/5.jpg"></p>
+						<a href="">Apple iPhone 6(A1586)16GB金色移动</a></br>
+						<font color="#afafaf" size="2">已有<strong>64125</strong>人评价</font>
+					</div>
+				</div>
+				<div class="sp_">
+					<div class="dgsp">
+						<a href=""><img src="images/sp.jpg"></a>
+						<img src="images/sp.jpg" class="sl">
+						<p class="red"><span>￥</span>4888.00 <img src="images/5.jpg"></p>
+						<a href="">Apple iPhone 6(A1586)16GB金色移动</a></br>
+						<font color="#afafaf" size="2">已有<strong>64125</strong>人评价</font>
+					</div>
+				</div>
+				<div class="sp_">
+					<div class="dgsp">
+						<a href=""><img src="images/sp.jpg"></a>
+						<img src="images/sp.jpg" class="sl">
+						<p class="red"><span>￥</span>4888.00 <img src="images/5.jpg"></p>
+						<a href="">Apple iPhone 6(A1586)16GB金色移动</a></br>
+						<font color="#afafaf" size="2">已有<strong>64125</strong>人评价</font>
+					</div>
+				</div>
+				<div class="sp_">
+					<div class="dgsp">
+						<a href=""><img src="images/sp.jpg"></a>
+						<img src="images/sp.jpg" class="sl">
+						<p class="red"><span>￥</span>4888.00 <img src="images/5.jpg"></p>
+						<a href="">Apple iPhone 6(A1586)16GB金色移动</a></br>
+						<font color="#afafaf" size="2">已有<strong>64125</strong>人评价</font>
+					</div>
+				</div>
+				<div class="sp_">
+					<div class="dgsp">
+						<a href=""><img src="images/sp.jpg"></a>
+						<img src="images/sp.jpg" class="sl">
+						<p class="red"><span>￥</span>4888.00 <img src="images/5.jpg"></p>
+						<a href="">Apple iPhone 6(A1586)16GB金色移动</a></br>
+						<font color="#afafaf" size="2">已有<strong>64125</strong>人评价</font>
+					</div>
+				</div>
+				<div class="sp_">
+					<div class="dgsp">
+						<a href=""><img src="images/sp.jpg"></a>
+						<img src="images/sp.jpg" class="sl">
+						<p class="red"><span>￥</span>4888.00 <img src="images/5.jpg"></p>
+						<a href="">Apple iPhone 6(A1586)16GB金色移动</a></br>
+						<font color="#afafaf" size="2">已有<strong>64125</strong>人评价</font>
+					</div>
+				</div>
+				<div class="sp_">
+					<div class="dgsp">
+						<a href=""><img src="images/sp.jpg"></a>
+						<img src="images/sp.jpg" class="sl">
+						<p class="red"><span>￥</span>4888.00 <img src="images/5.jpg"></p>
+						<a href="">Apple iPhone 6(A1586)16GB金色移动</a></br>
+						<font color="#afafaf" size="2">已有<strong>64125</strong>人评价</font>
+					</div>
+				</div>
+				<div class="sp_">
+					<div class="dgsp">
+						<a href=""><img src="images/sp.jpg"></a>
+						<img src="images/sp.jpg" class="sl">
+						<p class="red"><span>￥</span>4888.00 <img src="images/5.jpg"></p>
+						<a href="">Apple iPhone 6(A1586)16GB金色移动</a></br>
+						<font color="#afafaf" size="2">已有<strong>64125</strong>人评价</font>
+					</div>
+				</div>
+			</div>
+		
+			<div class="page clear" >
+				<a class="bbtn"><span><</span> 上一页</a>
+				<a class="dqy_" href="">1</a>
+				<a class="fy_" href="">2</a>
+				<a class="fy_" href="">3</a>
+				<strong class="sl_">...</strong>
+				<a class="fy_" href="">257</a>
+				<a class="kbtn" href="javascript:void(0)">下一页  <span>></span></a>
+				<strong class="sl_" style="margin-left:=20px">共257页</strong>
+				<strong class="sl_" style="margin-left:=5px">到第<input type="text" value="1">页</strong>
+				<a class="kbtn" href="javascript:void(0)" style="width:28px">确定</a>
+			
+			</div>
+			</div>
+		</div>
+	</div>
+	<!-- content -->
+	<div class="footer">
+		 <p class="text-center">
+		 	<span>
+		 		<a href="about-us.html">关于我们</a><font>|</font>
+		 		<a href="about-us.html">商务合作</a><font>|</font>
+		 		<a href="about-us.html">网站地图</a><font>|</font>
+		 		<a href="about-us.html">友情链接</a><font>|</font>
+		 		<a href="about-us.html">法律声明</a>
+		 	</span>
+		 </p>
+		 <p class="text-center">
+		 	<span>
+		 		Copyright©2012 广州市E购通网络科技有限公司 版权所有
+		 	</span>
+		 </p>
+	</div>
+</body>
+</html>
